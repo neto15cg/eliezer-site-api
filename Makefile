@@ -19,9 +19,10 @@ clean:
 	rm -f main
 	docker compose down -v
 
-# Ensure clean state before starting
+# Clean only application files, preserve database
 dev-clean:
-	docker compose down -v
+	docker compose stop app
+	docker compose rm -f app
 	rm -rf tmp/
 
 # Start PostgreSQL container and wait for it to be ready
@@ -41,8 +42,8 @@ dev-db:
 		sleep 2; \
 	done
 
-# Development command with proper initialization and waiting
-dev: dev-clean
+# Development command with proper initialization and database preservation
+dev: mod-tidy dev-clean
 	@echo "Starting services..."
 	docker compose up -d db
 	@echo "Waiting for database..."
@@ -52,13 +53,18 @@ dev: dev-clean
 			docker compose up --build app; \
 			break; \
 		fi; \
-		if [ $$i -eq 30]; then \
+		if [ $$i -eq 30 ]; then \
 			echo "Error: Database did not become ready in time"; \
 			exit 1; \
 		fi; \
 		echo "Waiting for database... ($$i/30)"; \
 		sleep 2; \
 	done
+
+# Add clean-all command for when you want to remove everything including database
+clean-all:
+	docker compose down -v
+	rm -rf tmp/
 
 # Show all logs
 dev-logs:
@@ -75,3 +81,30 @@ dev-status:
 	@docker compose ps
 	@echo "\n=== Database Status ==="
 	@docker compose exec db pg_isready -U postgres || echo "Database not ready"
+
+# Migration commands
+migrate-create:
+	@read -p "Enter migration name: " name; \
+	docker compose exec app migrate create -ext sql -dir db/migrations -seq $$name
+
+migrate-up:
+	docker compose exec app migrate -path db/migrations -database "postgresql://postgres:postgres@db:5432/postgres?sslmode=disable" up
+
+migrate-down:
+	docker compose exec app migrate -path db/migrations -database "postgresql://postgres:postgres@db:5432/postgres?sslmode=disable" down
+
+migrate-force:
+	@read -p "Enter version: " version; \
+	docker compose exec app migrate -path db/migrations -database "postgresql://postgres:postgres@db:5432/postgres?sslmode=disable" force $$version
+
+migrate-status:
+	docker compose exec app migrate -path db/migrations -database "postgresql://postgres:postgres@db:5432/postgres?sslmode=disable" version
+
+migrate-fix:
+	@echo "Forcing clean state and reapplying migrations..."
+	docker compose exec app migrate -path db/migrations -database "postgresql://postgres:postgres@db:5432/postgres?sslmode=disable" force 0
+	docker compose exec app migrate -path db/migrations -database "postgresql://postgres:postgres@db:5432/postgres?sslmode=disable" up
+
+# Add dependency management commands
+mod-tidy:
+	go mod tidy
