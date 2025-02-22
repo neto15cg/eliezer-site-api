@@ -7,6 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
+type Validator interface {
+	Validate() error
+}
+
 type Message struct {
 	ID        uuid.UUID `json:"id" gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
 	Message   string    `json:"message" binding:"required"`
@@ -19,4 +23,12 @@ func (m *Message) Validate() error {
 		return errors.New("message cannot be empty")
 	}
 	return nil
+}
+
+// Factory method for Message
+func NewMessage(content string) *Message {
+	return &Message{
+		ID:      uuid.New(),
+		Message: content,
+	}
 }

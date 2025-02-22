@@ -7,15 +7,15 @@ import (
 	"github.com/google/uuid"
 )
 
-type MessageService struct {
+type messageService struct {
 	repo domain.MessageRepository
 }
 
-func NewMessageService(repo domain.MessageRepository) *MessageService {
-	return &MessageService{repo: repo}
+func NewMessageService(repo domain.MessageRepository) domain.MessageService {
+	return &messageService{repo: repo}
 }
 
-func (s *MessageService) CreateMessage(content string) (*models.Message, error) {
+func (s *messageService) CreateMessage(content string) (*models.Message, error) {
 	message := &models.Message{
 		ID:      uuid.New(),
 		Message: content,
@@ -32,6 +32,10 @@ func (s *MessageService) CreateMessage(content string) (*models.Message, error) 
 	return message, nil
 }
 
-func (s *MessageService) ListMessages() ([]models.Message, error) {
+func (s *messageService) ListMessages() ([]models.Message, error) {
 	return s.repo.List()
+}
+
+func (s *messageService) GetMessage(id uuid.UUID) (*models.Message, error) {
+	return s.repo.GetByID(id)
 }

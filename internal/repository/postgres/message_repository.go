@@ -3,20 +3,21 @@ package postgres
 import (
 	"database/sql"
 
+	"app/internal/domain"
 	"app/models"
 
 	"github.com/google/uuid"
 )
 
-type MessageRepository struct {
+type messageRepository struct {
 	db *sql.DB
 }
 
-func NewMessageRepository(db *sql.DB) *MessageRepository {
-	return &MessageRepository{db: db}
+func NewMessageRepository(db *sql.DB) domain.MessageRepository {
+	return &messageRepository{db: db}
 }
 
-func (r *MessageRepository) Create(message *models.Message) error {
+func (r *messageRepository) Create(message *models.Message) error {
 	query := `
 		INSERT INTO messages (id, message, created_at, updated_at)
 		VALUES ($1, $2, NOW(), NOW())
@@ -26,7 +27,7 @@ func (r *MessageRepository) Create(message *models.Message) error {
 		Scan(&message.ID, &message.CreatedAt, &message.UpdatedAt)
 }
 
-func (r *MessageRepository) List() ([]models.Message, error) {
+func (r *messageRepository) List() ([]models.Message, error) {
 	query := `
 		SELECT id, message, created_at, updated_at
 		FROM messages
@@ -50,7 +51,7 @@ func (r *MessageRepository) List() ([]models.Message, error) {
 	return messages, nil
 }
 
-func (r *MessageRepository) GetByID(id uuid.UUID) (*models.Message, error) {
+func (r *messageRepository) GetByID(id uuid.UUID) (*models.Message, error) {
 	var m models.Message
 	query := `
 		SELECT id, message, created_at, updated_at
