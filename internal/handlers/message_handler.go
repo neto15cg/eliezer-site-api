@@ -4,20 +4,11 @@ import (
 	"database/sql"
 	"net/http"
 
-	"app/internal/domain"
 	"app/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-type MessageHandler struct {
-	service domain.MessageService
-}
-
-func NewMessageHandler(service domain.MessageService) *MessageHandler {
-	return &MessageHandler{service: service}
-}
 
 func (h *MessageHandler) Create(c *gin.Context) {
 	var msg models.Message
@@ -26,7 +17,7 @@ func (h *MessageHandler) Create(c *gin.Context) {
 		return
 	}
 
-	result, err := h.service.CreateMessage(msg.Message)
+	result, err := h.service.CreateMessage(msg.Message, msg.ConversationID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

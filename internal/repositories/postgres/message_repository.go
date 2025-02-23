@@ -3,7 +3,7 @@ package postgres
 import (
 	"database/sql"
 
-	"app/internal/domain"
+	"app/internal/interfaces"
 	"app/models"
 
 	"github.com/google/uuid"
@@ -13,7 +13,7 @@ type messageRepository struct {
 	db *sql.DB
 }
 
-func NewMessageRepository(db *sql.DB) domain.MessageRepository {
+func NewMessageRepository(db *sql.DB) interfaces.MessageRepository {
 	return &messageRepository{db: db}
 }
 

@@ -33,7 +33,7 @@ func main() {
 	}
 	defer db.Close()
 
-	// Initialize messageContainer
+	// Initialize containers
 	messageContainer, err := containers.Initialize(db)
 	if err != nil {
 		log.Fatalf("Failed to initialize container: %v", err)

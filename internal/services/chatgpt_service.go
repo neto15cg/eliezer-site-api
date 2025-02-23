@@ -2,24 +2,11 @@ package services
 
 import (
 	"context"
-	"os"
 
 	openai "github.com/sashabaranov/go-openai"
 )
 
-type ChatGPTService struct {
-	client *openai.Client
-}
-
-func NewChatGPTService() *ChatGPTService {
-	apiKey := os.Getenv("OPENAI_API_KEY")
-	client := openai.NewClient(apiKey)
-	return &ChatGPTService{
-		client: client,
-	}
-}
-
-func (s *ChatGPTService) SendMessage(message string) (string, error) {
+func (s *chatGPTService) SendMessage(message string) (string, error) {
 	prompt := `Você agora é um chatbot que responderá a recrutadores.
 	Não responda assuntos paralelos.
 	Você responderá com linguagem formal e profissional.

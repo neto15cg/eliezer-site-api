@@ -4,19 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"app/internal/domain"
 	"app/models"
 )
-
-type ChatGPTHandler struct {
-	chatGPTService domain.ChatGPTService
-}
-
-func NewChatGPTHandler(service domain.ChatGPTService) *ChatGPTHandler {
-	return &ChatGPTHandler{
-		chatGPTService: service,
-	}
-}
 
 func (h *ChatGPTHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
 	var req models.ChatGPTRequest

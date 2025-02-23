@@ -1,24 +1,16 @@
 package services
 
 import (
-	"app/internal/domain"
 	"app/models"
 
 	"github.com/google/uuid"
 )
 
-type messageService struct {
-	repo domain.MessageRepository
-}
-
-func NewMessageService(repo domain.MessageRepository) domain.MessageService {
-	return &messageService{repo: repo}
-}
-
-func (s *messageService) CreateMessage(content string) (*models.Message, error) {
+func (s *messageService) CreateMessage(content string, conversationID *uuid.UUID) (*models.Message, error) {
 	message := &models.Message{
-		ID:      uuid.New(),
-		Message: content,
+		ID:             uuid.New(),
+		Message:        content,
+		ConversationID: conversationID,
 	}
 
 	if err := message.Validate(); err != nil {

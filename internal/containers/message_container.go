@@ -4,7 +4,7 @@ import (
 	"database/sql"
 
 	"app/internal/handlers"
-	"app/internal/repository/postgres"
+	"app/internal/repositories/postgres"
 	"app/internal/services"
 )
 
