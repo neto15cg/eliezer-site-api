@@ -43,8 +43,6 @@ func main() {
 	r := gin.Default()
 
 	// Setup routes
-	routes.SetupMessageRoutes(r, messageContainer.Messages.MessageHandler)
-	routes.SetupChatGPTRoutes(r, messageContainer.ChatGPT.ChatGPTHandler)
 	routes.SetupConversationRoutes(r, messageContainer.Chat.ChntHandler)
 
 	// Add health check endpoint
