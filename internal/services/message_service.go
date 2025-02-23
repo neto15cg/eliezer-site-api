@@ -31,3 +31,7 @@ func (s *messageService) ListMessages() ([]models.Message, error) {
 func (s *messageService) GetMessage(id uuid.UUID) (*models.Message, error) {
 	return s.repo.GetByID(id)
 }
+
+func (s *messageService) GetMessagesByConversationID(conversationID uuid.UUID) ([]models.Message, error) {
+	return s.repo.GetByConversationID(conversationID)
+}

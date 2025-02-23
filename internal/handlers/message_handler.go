@@ -55,3 +55,23 @@ func (h *MessageHandler) GetByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, message)
 }
+
+func (h *MessageHandler) GetByConversationId(c *gin.Context) {
+	conversationId, err := uuid.Parse(c.Param("conversation_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid conversation id format"})
+		return
+	}
+
+	messages, err := h.service.GetMessagesByConversationID(conversationId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "no messages found for this conversation"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, messages)
+}

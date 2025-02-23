@@ -65,3 +65,29 @@ func (r *messageRepository) GetByID(id uuid.UUID) (*models.Message, error) {
 	}
 	return &m, nil
 }
+
+func (r *messageRepository) GetByConversationID(conversationID uuid.UUID) ([]models.Message, error) {
+	query := `
+		SELECT id, message, conversation_id, created_at, updated_at
+		FROM messages
+		WHERE conversation_id = $1
+		ORDER BY created_at ASC
+		LIMIT 100`
+
+	rows, err := r.db.Query(query, conversationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	messages := make([]models.Message, 0)
+	for rows.Next() {
+		var m models.Message
+		if err := rows.Scan(&m.ID, &m.Message, &m.ConversationID, &m.CreatedAt, &m.UpdatedAt); err != nil {
+			return nil, err
+		}
+		messages = append(messages, m)
+	}
+
+	return messages, nil
+}

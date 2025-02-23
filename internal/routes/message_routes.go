@@ -12,5 +12,6 @@ func SetupMessageRoutes(router *gin.Engine, messageHandler *handlers.MessageHand
 		messages.POST("", messageHandler.Create)
 		messages.GET("", messageHandler.List)
 		messages.GET("/:id", messageHandler.GetByID)
+		messages.GET("/conversation/:conversation_id", messageHandler.GetByConversationId)
 	}
 }
