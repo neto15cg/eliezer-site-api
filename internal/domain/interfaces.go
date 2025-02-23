@@ -22,3 +22,7 @@ type MessageService interface {
 	ListMessages() ([]models.Message, error)
 	GetMessage(id uuid.UUID) (*models.Message, error)
 }
+
+type ChatGPTService interface {
+	SendMessage(message string) (string, error)
+}

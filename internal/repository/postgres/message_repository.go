@@ -19,17 +19,17 @@ func NewMessageRepository(db *sql.DB) domain.MessageRepository {
 
 func (r *messageRepository) Create(message *models.Message) error {
 	query := `
-		INSERT INTO messages (id, message, created_at, updated_at)
-		VALUES ($1, $2, NOW(), NOW())
+		INSERT INTO messages (id, message, conversation_id, created_at, updated_at)
+		VALUES ($1, $2, $3, NOW(), NOW())
 		RETURNING id, created_at, updated_at`
 
-	return r.db.QueryRow(query, message.ID, message.Message).
+	return r.db.QueryRow(query, message.ID, message.Message, message.ConversationID).
 		Scan(&message.ID, &message.CreatedAt, &message.UpdatedAt)
 }
 
 func (r *messageRepository) List() ([]models.Message, error) {
 	query := `
-		SELECT id, message, created_at, updated_at
+		SELECT id, message, conversation_id, created_at, updated_at
 		FROM messages
 		ORDER BY created_at DESC`
 
@@ -42,7 +42,7 @@ func (r *messageRepository) List() ([]models.Message, error) {
 	messages := make([]models.Message, 0)
 	for rows.Next() {
 		var m models.Message
-		if err := rows.Scan(&m.ID, &m.Message, &m.CreatedAt, &m.UpdatedAt); err != nil {
+		if err := rows.Scan(&m.ID, &m.Message, &m.ConversationID, &m.CreatedAt, &m.UpdatedAt); err != nil {
 			return []models.Message{}, err
 		}
 		messages = append(messages, m)

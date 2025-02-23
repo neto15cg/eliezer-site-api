@@ -1,15 +1,15 @@
-package container
+package containers
 
 import (
 	"database/sql"
 
-	"app/internal/handler"
+	"app/internal/handlers"
 	"app/internal/repository/postgres"
-	"app/internal/service"
+	"app/internal/services"
 )
 
 type Container struct {
-	MessageHandler *handler.MessageHandler
+	MessageHandler *handlers.MessageHandler
 }
 
 func InitializeMessageContainer(db *sql.DB) (*Container, error) {
@@ -17,10 +17,10 @@ func InitializeMessageContainer(db *sql.DB) (*Container, error) {
 	messageRepo := postgres.NewMessageRepository(db)
 
 	// Initialize service
-	messageService := service.NewMessageService(messageRepo)
+	messageService := services.NewMessageService(messageRepo)
 
 	// Initialize handler
-	messageHandler := handler.NewMessageHandler(messageService)
+	messageHandler := handlers.NewMessageHandler(messageService)
 
 	return &Container{
 		MessageHandler: messageHandler,

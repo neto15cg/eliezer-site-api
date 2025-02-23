@@ -1,12 +1,12 @@
 package routes
 
 import (
-	"app/internal/handler"
+	"app/internal/handlers"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetupMessageRoutes(router *gin.Engine, messageHandler *handler.MessageHandler) {
+func SetupMessageRoutes(router *gin.Engine, messageHandler *handlers.MessageHandler) {
 	messages := router.Group("/messages")
 	{
 		messages.POST("", messageHandler.Create)

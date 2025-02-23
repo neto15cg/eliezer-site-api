@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"app/internal/container"
+	"app/internal/containers"
 	"app/internal/routes"
 	"app/pkg/config"
 	"app/pkg/database"
@@ -34,7 +34,7 @@ func main() {
 	defer db.Close()
 
 	// Initialize messageContainer
-	messageContainer, err := container.InitializeMessageContainer(db)
+	messageContainer, err := containers.Initialize(db)
 	if err != nil {
 		log.Fatalf("Failed to initialize container: %v", err)
 	}
@@ -43,7 +43,8 @@ func main() {
 	r := gin.Default()
 
 	// Setup routes
-	routes.SetupMessageRoutes(r, messageContainer.MessageHandler)
+	routes.SetupMessageRoutes(r, messageContainer.Messages.MessageHandler)
+	routes.SetupChatGPTRoutes(r, messageContainer.ChatGPT.ChatGPTHandler)
 
 	// Add health check endpoint
 	r.GET("/health", func(c *gin.Context) {

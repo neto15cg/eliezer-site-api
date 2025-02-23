@@ -18,13 +18,14 @@ RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/
     && mv migrate /usr/local/bin/migrate \
     && chmod +x /usr/local/bin/migrate
 
-# Initialize go module
+# Initialize Go module
 COPY go.mod go.sum ./
-RUN go mod download && \
-    go mod verify
+RUN go mod download
 
 # Copy the rest of the application
 COPY . .
+
+# Ensure dependencies are available
 RUN go mod tidy
 
 # Development with hot reload
