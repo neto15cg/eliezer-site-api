@@ -8,11 +8,11 @@ import (
 	"app/internal/services"
 )
 
-type Container struct {
+type MessageContainer struct {
 	MessageHandler *handlers.MessageHandler
 }
 
-func InitializeMessageContainer(db *sql.DB) (*Container, error) {
+func InitializeMessageContainer(db *sql.DB) (*MessageContainer, error) {
 	// Initialize repository
 	messageRepo := postgres.NewMessageRepository(db)
 
@@ -22,7 +22,7 @@ func InitializeMessageContainer(db *sql.DB) (*Container, error) {
 	// Initialize handler
 	messageHandler := handlers.NewMessageHandler(messageService)
 
-	return &Container{
+	return &MessageContainer{
 		MessageHandler: messageHandler,
 	}, nil
 }

@@ -3,8 +3,9 @@ package containers
 import "database/sql"
 
 type AppContainer struct {
-	Messages *Container
+	Messages *MessageContainer
 	ChatGPT  *ChatGPTContainer
+	Chat     *ChatContainer
 }
 
 func Initialize(db *sql.DB) (*AppContainer, error) {
@@ -18,8 +19,14 @@ func Initialize(db *sql.DB) (*AppContainer, error) {
 		return nil, err
 	}
 
+	chatContainer, err := InitializeChatContainer(db)
+	if err != nil {
+		return nil, err
+	}
+
 	return &AppContainer{
 		Messages: messageContainer,
 		ChatGPT:  chatGPTContainer,
+		Chat:     chatContainer,
 	}, nil
 }

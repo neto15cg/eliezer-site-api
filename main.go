@@ -45,6 +45,7 @@ func main() {
 	// Setup routes
 	routes.SetupMessageRoutes(r, messageContainer.Messages.MessageHandler)
 	routes.SetupChatGPTRoutes(r, messageContainer.ChatGPT.ChatGPTHandler)
+	routes.SetupConversationRoutes(r, messageContainer.Chat.ChntHandler)
 
 	// Add health check endpoint
 	r.GET("/health", func(c *gin.Context) {
