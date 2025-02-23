@@ -19,17 +19,17 @@ func NewMessageRepository(db *sql.DB) interfaces.MessageRepository {
 
 func (r *messageRepository) Create(message *models.Message) error {
 	query := `
-		INSERT INTO messages (id, message, conversation_id, created_at, updated_at)
-		VALUES ($1, $2, $3, NOW(), NOW())
+		INSERT INTO messages (id, message, response, conversation_id, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, NOW(), NOW())
 		RETURNING id, created_at, updated_at`
 
-	return r.db.QueryRow(query, message.ID, message.Message, message.ConversationID).
+	return r.db.QueryRow(query, message.ID, message.Message, message.Response, message.ConversationID).
 		Scan(&message.ID, &message.CreatedAt, &message.UpdatedAt)
 }
 
 func (r *messageRepository) List() ([]models.Message, error) {
 	query := `
-		SELECT id, message, conversation_id, created_at, updated_at
+		SELECT id, message, response, conversation_id, created_at, updated_at
 		FROM messages
 		ORDER BY created_at DESC`
 
@@ -42,7 +42,7 @@ func (r *messageRepository) List() ([]models.Message, error) {
 	messages := make([]models.Message, 0)
 	for rows.Next() {
 		var m models.Message
-		if err := rows.Scan(&m.ID, &m.Message, &m.ConversationID, &m.CreatedAt, &m.UpdatedAt); err != nil {
+		if err := rows.Scan(&m.ID, &m.Message, &m.Response, &m.ConversationID, &m.CreatedAt, &m.UpdatedAt); err != nil {
 			return []models.Message{}, err
 		}
 		messages = append(messages, m)
@@ -54,12 +54,12 @@ func (r *messageRepository) List() ([]models.Message, error) {
 func (r *messageRepository) GetByID(id uuid.UUID) (*models.Message, error) {
 	var m models.Message
 	query := `
-		SELECT id, message, created_at, updated_at
+		SELECT id, message, response, created_at, updated_at
 		FROM messages
 		WHERE id = $1`
 
 	err := r.db.QueryRow(query, id).
-		Scan(&m.ID, &m.Message, &m.CreatedAt, &m.UpdatedAt)
+		Scan(&m.ID, &m.Message, &m.Response, &m.CreatedAt, &m.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (r *messageRepository) GetByID(id uuid.UUID) (*models.Message, error) {
 
 func (r *messageRepository) GetByConversationID(conversationID uuid.UUID) ([]models.Message, error) {
 	query := `
-		SELECT id, message, conversation_id, created_at, updated_at
+		SELECT id, message, response, conversation_id, created_at, updated_at
 		FROM messages
 		WHERE conversation_id = $1
 		ORDER BY created_at ASC
@@ -83,7 +83,7 @@ func (r *messageRepository) GetByConversationID(conversationID uuid.UUID) ([]mod
 	messages := make([]models.Message, 0)
 	for rows.Next() {
 		var m models.Message
-		if err := rows.Scan(&m.ID, &m.Message, &m.ConversationID, &m.CreatedAt, &m.UpdatedAt); err != nil {
+		if err := rows.Scan(&m.ID, &m.Message, &m.Response, &m.ConversationID, &m.CreatedAt, &m.UpdatedAt); err != nil {
 			return nil, err
 		}
 		messages = append(messages, m)

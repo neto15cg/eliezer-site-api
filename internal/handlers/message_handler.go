@@ -17,7 +17,7 @@ func (h *MessageHandler) Create(c *gin.Context) {
 		return
 	}
 
-	result, err := h.service.CreateMessage(msg.Message, msg.ConversationID)
+	result, err := h.service.CreateMessage(msg.Message, *msg.Response, msg.ConversationID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

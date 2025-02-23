@@ -6,11 +6,12 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *messageService) CreateMessage(content string, conversationID *uuid.UUID) (*models.Message, error) {
+func (s *messageService) CreateMessage(content string, response string, conversationID *uuid.UUID) (*models.Message, error) {
 	message := &models.Message{
 		ID:             uuid.New(),
 		Message:        content,
 		ConversationID: conversationID,
+		Response:       &response,
 	}
 
 	if err := message.Validate(); err != nil {
