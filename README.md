@@ -13,7 +13,7 @@ A RESTful API service built with Go, Gin, and PostgreSQL.
 1. Clone the repository
 ```bash
 git clone <repository-url>
-cd eliezer-site
+cd eliezer-site-api
 ```
 
 2. Copy environment file
@@ -51,66 +51,33 @@ make migrate-fix    # Fix dirty migration state
 ## API Endpoints
 
 ### Messages
-- `POST /messages` - Create a new message
+- `POST /conversation` - Create a new message
   ```json
   {
-    "message": "Hello, World!"
+    "message": "Hello, World!",
+    "conversation_id": "eace393d-15f4-495c-8abe-2f50832147c3"
   }
   ```
 
-- `GET /messages` - List all messages
-- `GET /messages/:id` - Get message by ID
+- `GET /conversation/:id` - List all messages from this conversation
 
 ### Health Check
 - `GET /health` - Check API status
-
-## Project Structure
-
-```
-.
-├── db/
-│   ├── Dockerfile
-│   └── migrations/       # Database migrations
-├── internal/
-│   ├── domain/          # Interfaces and domain logic
-│   ├── handler/         # HTTP handlers
-│   ├── repository/      # Data access layer
-│   ├── routes/          # Route definitions
-│   └── service/         # Business logic
-├── models/              # Data models
-├── pkg/
-│   ├── config/          # Configuration
-│   └── database/        # Database utilities
-└── docker-compose.yml   # Container orchestration
-```
 
 ## Environment Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | APP_NAME | Application name | eliezer-site |
+| APP_ENV | Application environment | development |
 | APP_PORT | HTTP port | 8080 |
 | DB_HOST | Database host | db |
 | DB_PORT | Database port | 5432 |
 | DB_USER | Database user | postgres |
 | DB_PASSWORD | Database password | postgres |
 | DB_NAME | Database name | postgres |
+| DB_SSL_MODE | Database SSL mode | disable |
+| MIGRATION_PATH | Database migrations path | db/migrations |
+| OPENAI_API_KEY | OpenAI API key | - |
+| CHATBOT_PROMPT | Chatbot initial prompt configuration | - |
 
-## Architecture
-
-This project follows:
-- Clean Architecture principles
-- SOLID design principles
-- Domain-Driven Design concepts
-- Repository pattern
-- Dependency Injection
-
-## Features
-
-- Hot reload development
-- PostgreSQL database
-- RESTful API
-- Automated migrations
-- Docker containerization
-- Structured logging
-- Health checks
