@@ -43,7 +43,7 @@ func main() {
 	r := gin.Default()
 
 	// Setup routes
-	routes.SetupConversationRoutes(r, messageContainer.Chat.ChntHandler)
+	routes.SetupConversationRoutes(r, messageContainer.Chat.ChntHandler, messageContainer.Messages.MessageHandler)
 
 	// Add health check endpoint
 	r.GET("/health", func(c *gin.Context) {

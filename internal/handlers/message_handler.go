@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"app/models"
@@ -62,6 +63,7 @@ func (h *MessageHandler) GetByConversationId(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid conversation id format"})
 		return
 	}
+	fmt.Println("GetByConversationId", conversationId)
 
 	messages, err := h.service.GetMessagesByConversationID(conversationId)
 	if err != nil {
