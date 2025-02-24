@@ -10,6 +10,6 @@ func SetupConversationRoutes(router *gin.Engine, chatHandler *handlers.ChatHandl
 	conversation := router.Group("/conversation")
 	{
 		conversation.POST("", chatHandler.SendConversationMessage)
-		conversation.GET("/conversation/:conversation_id", chatHandler.SendConversationMessage)
+		conversation.GET("/:conversation_id", chatHandler.SendConversationMessage)
 	}
 }
