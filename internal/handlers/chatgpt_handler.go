@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"app/models"
+
+	openai "github.com/sashabaranov/go-openai"
 )
 
 func (h *ChatGPTHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +16,9 @@ func (h *ChatGPTHandler) SendMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := h.chatGPTService.SendMessage(req.Message)
+	messagesHistory := make([]openai.ChatCompletionMessage, 0)
+
+	response, err := h.chatGPTService.SendMessage(req.Message, messagesHistory)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

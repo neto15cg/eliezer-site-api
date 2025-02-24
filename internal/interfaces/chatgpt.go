@@ -1,5 +1,7 @@
 package interfaces
 
+import "github.com/sashabaranov/go-openai"
+
 type ChatGPTService interface {
-	SendMessage(message string) (string, error)
+	SendMessage(message string, history []openai.ChatCompletionMessage) (string, error)
 }
