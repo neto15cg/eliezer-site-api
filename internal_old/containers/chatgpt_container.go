@@ -1,8 +1,8 @@
 package containers
 
 import (
-	"app/internal/handlers"
-	"app/internal/services"
+	"app/internal_old/handlers"
+	"app/internal_old/services"
 )
 
 type ChatGPTContainer struct {

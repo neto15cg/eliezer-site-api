@@ -3,9 +3,9 @@ package containers
 import (
 	"database/sql"
 
-	"app/internal/handlers"
-	"app/internal/repositories/postgres"
-	"app/internal/services"
+	"app/internal_old/handlers"
+	"app/internal_old/repositories/postgres"
+	"app/internal_old/services"
 )
 
 type ChatContainer struct {

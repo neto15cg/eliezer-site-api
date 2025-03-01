@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"app/internal/containers"
-	"app/internal/routes"
+	"app/internal_old/containers"
+	"app/internal_old/routes"
 	"app/pkg/config"
 	"app/pkg/database"
 

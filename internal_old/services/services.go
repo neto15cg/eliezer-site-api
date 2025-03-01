@@ -3,7 +3,7 @@ package services
 import (
 	"os"
 
-	"app/internal/interfaces"
+	"app/internal_old/interfaces"
 
 	openai "github.com/sashabaranov/go-openai"
 )

@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"app/internal/interfaces"
+	"app/internal_old/interfaces"
 	"app/models"
 
 	"github.com/gin-gonic/gin"

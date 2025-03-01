@@ -1,6 +1,6 @@
 package handlers
 
-import "app/internal/interfaces"
+import "app/internal_old/interfaces"
 
 type MessageHandler struct {
 	service interfaces.MessageService
