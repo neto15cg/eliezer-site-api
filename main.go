@@ -3,15 +3,13 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
 
-	"app/internal_old/containers"
-	"app/internal_old/routes"
-	"app/pkg/config"
-	"app/pkg/database"
-
-	"github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
+	"app/config/config"
+	"app/config/database"
+	"app/internal/controllers"
+	"app/internal/repositories"
+	"app/internal/routes"
+	"app/internal/services"
 )
 
 func main() {
@@ -31,30 +29,21 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer db.Close()
+	defer db.Close() // Close the connection when the application exits
 
-	// Initialize containers
-	messageContainer, err := containers.Initialize(db)
-	if err != nil {
-		log.Fatalf("Failed to initialize container: %v", err)
+	// Verify connection is active
+	if err := db.Ping(); err != nil {
+		log.Fatalf("Database connection failed: %v", err)
 	}
+	log.Println("Database connection established successfully")
 
-	// Initialize Gin
-	r := gin.Default()
-
-	// Setup routes
-	routes.SetupConversationRoutes(r, messageContainer.Chat.ChntHandler, messageContainer.Messages.MessageHandler)
-
-	// Add health check endpoint
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status": "ok",
-			"time":   time.Now(),
-		})
-	})
+	messageRepo := repositories.NewMessageRepositoryPq(db)
+	messageService := services.NewMessageService(messageRepo)
+	messageController := controllers.NewMessageController(messageService)
+	router := routes.SetupRoutes(messageController)
 
 	fmt.Printf("Server starting on port %s...\n", cfg.AppPort)
-	if err := r.Run(":" + cfg.AppPort); err != nil {
-		panic(err)
+	if err := router.Run(":" + cfg.AppPort); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
 	}
 }
