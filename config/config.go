@@ -1,4 +1,4 @@
-package config_old
+package config
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ func LoadConfig() (*Config, error) {
 	}
 
 	config := &Config{
-		AppName: getEnvOrDefault("APP_NAME", "eliezer-site"),
+		AppName: getEnvOrDefault("APP_NAME", "eliezer-site-api"),
 		AppEnv:  getEnvOrDefault("APP_ENV", "development"),
 		AppPort: getEnvOrDefault("APP_PORT", "8080"),
 

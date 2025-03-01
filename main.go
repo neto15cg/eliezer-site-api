@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"app/config/config"
-	"app/config/database"
+	"app/cmd/database"
+	"app/config"
 	"app/internal/controllers"
 	"app/internal/repositories"
 	"app/internal/routes"
@@ -25,7 +25,7 @@ func main() {
 	}
 
 	// Setup database connection
-	db, err := database.Connect(cfg)
+	db, err := config.ConnectDB(cfg)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
@@ -40,7 +40,9 @@ func main() {
 	messageRepo := repositories.NewMessageRepositoryPq(db)
 	messageService := services.NewMessageService(messageRepo)
 	messageController := controllers.NewMessageController(messageService)
-	router := routes.SetupRoutes(messageController)
+	chatService := services.NewChatOpenaiService()
+	chatController := controllers.NewChatController(chatService, messageService)
+	router := routes.SetupRoutes(messageController, chatController)
 
 	fmt.Printf("Server starting on port %s...\n", cfg.AppPort)
 	if err := router.Run(":" + cfg.AppPort); err != nil {

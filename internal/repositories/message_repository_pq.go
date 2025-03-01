@@ -65,7 +65,11 @@ func (r *messageRepositoryPg) GetByID(id uuid.UUID) (*entities.Message, error) {
 	return &m, nil
 }
 
-func (r *messageRepositoryPg) GetByConversationID(conversationID uuid.UUID) ([]entities.Message, error) {
+func (r *messageRepositoryPg) GetByConversationID(conversationID *uuid.UUID) ([]entities.Message, error) {
+	if conversationID == nil {
+		return nil, nil
+	}
+
 	query := `
 		SELECT id, message, response, conversation_id, created_at, updated_at
 		FROM messages

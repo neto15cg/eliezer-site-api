@@ -6,12 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(messageController *controllers.MessageController) *gin.Engine {
+func SetupRoutes(messageController *controllers.MessageController, openai *controllers.ChatController) *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/messages", messageController.GetMessages)
-	router.POST("/messages", messageController.CreateMessage)
-	router.GET("/messages/conversation/:conversation_id", messageController.GetByConversationID)
+	api := router.Group("/api")
+	{
+		api.GET("/messages", messageController.GetMessages)
+		api.POST("/messages", messageController.CreateMessage)
+		api.GET("/messages/conversation/:conversation_id", messageController.GetByConversationID)
 
+		api.POST("/chat", openai.HandleChatMessage)
+	}
+
+	// Return router with the API group
 	return router
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"app/config/config"
+	"app/config"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"

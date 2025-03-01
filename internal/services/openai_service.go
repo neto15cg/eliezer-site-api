@@ -7,7 +7,23 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-func (s *chatGPTService) SendMessage(message string, history []openai.ChatCompletionMessage) (string, error) {
+// OpenAIService is now exported
+type OpenAIService struct {
+	client *openai.Client
+}
+
+// NewChatOpenaiService creates a new OpenAI service instance
+func NewChatOpenaiService() *OpenAIService {
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	client := openai.NewClient(apiKey)
+
+	return &OpenAIService{
+		client: client,
+	}
+}
+
+// SendMessage sends a message to the OpenAI API and returns the response
+func (s *OpenAIService) SendMessage(message string, history []openai.ChatCompletionMessage) (string, error) {
 	prompt := os.Getenv("CHATBOT_PROMPT")
 
 	messages := make([]openai.ChatCompletionMessage, 0)

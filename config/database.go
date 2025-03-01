@@ -1,13 +1,11 @@
-package database
+package config
 
 import (
 	"database/sql"
 	"fmt"
-
-	"app/config/config"
 )
 
-func Connect(cfg *config.Config) (*sql.DB, error) {
+func ConnectDB(cfg *Config) (*sql.DB, error) {
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		cfg.DBUser,
 		cfg.DBPassword,

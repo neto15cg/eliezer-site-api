@@ -30,7 +30,7 @@ func (c *MessageController) GetMessages(ctx *gin.Context) {
 func (c *MessageController) CreateMessage(ctx *gin.Context) {
 	var message entities.Message
 	if err := ctx.ShouldBindJSON(&message); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -48,7 +48,7 @@ func (c *MessageController) GetByConversationID(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid conversation id format"})
 		return
 	}
-	messages, err := c.service.GetByConversationID(conversationID)
+	messages, err := c.service.GetByConversationID(&conversationID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
