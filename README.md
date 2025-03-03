@@ -51,7 +51,10 @@ make migrate-fix    # Fix dirty migration state
 ## API Endpoints
 
 ### Messages
-- `POST /conversation` - Create a new message
+- `GET /api/messages/conversation/:conversation_id` - List all messages from a conversation
+
+### Chat
+- `POST /api/chat` - Send a message to the chatbot
   ```json
   {
     "message": "Hello, World!",
@@ -59,10 +62,8 @@ make migrate-fix    # Fix dirty migration state
   }
   ```
 
-- `GET /conversation/:id` - List all messages from this conversation
-
 ### Health Check
-- `GET /health` - Check API status
+- `GET /api/health` - Check API status
 
 ## Environment Variables
 

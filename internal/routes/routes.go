@@ -14,6 +14,12 @@ func SetupRoutes(messageController *controllers.MessageController, openai *contr
 		api.GET("/messages/conversation/:conversation_id", messageController.GetByConversationID)
 
 		api.POST("/chat", openai.HandleChatMessage)
+
+		api.GET("/health", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"status": "ok",
+			})
+		})
 	}
 
 	// Return router with the API group
