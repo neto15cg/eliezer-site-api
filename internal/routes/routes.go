@@ -11,8 +11,6 @@ func SetupRoutes(messageController *controllers.MessageController, openai *contr
 
 	api := router.Group("/api")
 	{
-		api.GET("/messages", messageController.GetMessages)
-		api.POST("/messages", messageController.CreateMessage)
 		api.GET("/messages/conversation/:conversation_id", messageController.GetByConversationID)
 
 		api.POST("/chat", openai.HandleChatMessage)

@@ -2,6 +2,7 @@ package services_tests
 
 import (
 	"app/internal/entities"
+	"app/internal/interfaces"
 	"app/internal/repositories"
 
 	"github.com/google/uuid"
@@ -13,6 +14,9 @@ type MockMessageService struct {
 	mock.Mock
 	repo repositories.MessageRepository
 }
+
+// Ensure MockMessageService implements MessageServiceInterface
+var _ interfaces.MessageServiceInterface = (*MockMessageService)(nil)
 
 func NewMockMessageService(repo repositories.MessageRepository) *MockMessageService {
 	return &MockMessageService{repo: repo}

@@ -4,17 +4,17 @@ import (
 	"net/http"
 
 	"app/internal/entities"
-	"app/internal/services"
+	"app/internal/interfaces"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 type MessageController struct {
-	service *services.MessageService
+	service interfaces.MessageServiceInterface
 }
 
-func NewMessageController(service *services.MessageService) *MessageController {
+func NewMessageController(service interfaces.MessageServiceInterface) *MessageController {
 	return &MessageController{service: service}
 }
 

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"app/internal/entities"
-	"app/internal/services"
+	"app/internal/interfaces"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -12,12 +12,12 @@ import (
 )
 
 type ChatController struct {
-	openaiService  *services.OpenAIService
-	messageService *services.MessageService
+	openaiService  interfaces.OpenAIServiceInterface
+	messageService interfaces.MessageServiceInterface
 }
 
-// Updated constructor to include messageService
-func NewChatController(openaiService *services.OpenAIService, messageService *services.MessageService) *ChatController {
+// Updated constructor to use interfaces
+func NewChatController(openaiService interfaces.OpenAIServiceInterface, messageService interfaces.MessageServiceInterface) *ChatController {
 	return &ChatController{
 		openaiService:  openaiService,
 		messageService: messageService,
