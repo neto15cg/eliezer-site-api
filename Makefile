@@ -6,15 +6,6 @@ build:
 run:
 	go run main.go
 
-docker-build:
-	docker build -t go-app .
-
-docker-run:
-	docker run -p 8080:8080 go-app
-
-docker-compose:
-	docker compose up --build
-
 clean:
 	rm -f main
 	docker compose down -v
@@ -25,43 +16,28 @@ dev-clean:
 	docker compose rm -f app
 	rm -rf tmp/
 
-# Start PostgreSQL container and wait for it to be ready
-dev-db:
-	docker compose up -d db
-	@echo "Waiting for database to be ready..."
-	@for i in $$(seq 1 30); do \
-		if docker compose exec -T db pg_isready -U postgres >/dev/null 2>&1; then \
-			echo "Database is ready!"; \
-			break; \
-		fi; \
-		if [ $$i -eq 30 ]; then \
-			echo "Error: Database did not become ready in time"; \
-			exit 1; \
-		fi; \
-		echo "Waiting for database... ($$i/30)"; \
-		sleep 2; \
-	done
-
 # Development command with proper initialization and database preservation
 dev: mod-tidy dev-clean
-	@echo "Starting services..."
-	docker compose up -d db
-	@echo "Waiting for database..."
-	@for i in $$(seq 1 30); do \
-		if docker compose exec -T db pg_isready -U postgres >/dev/null 2>&1; then \
-			echo "Database is ready!"; \
-			docker compose up --build app; \
-			break; \
-		fi; \
-		if [ $$i -eq 30 ]; then \
-			echo "Error: Database did not become ready in time"; \
-			exit 1; \
-		fi; \
-		echo "Waiting for database... ($$i/30)"; \
-		sleep 2; \
-	done
+	@echo "Starting development environment..."
+	docker compose -f docker-compose.dev.yml up --build
 
-# Add clean-all command for when you want to remove everything including database
+# Production local test
+prod-local: mod-tidy
+	docker compose -f docker-compose.yml up --build
+
+# Production deployment commands
+prod-build:
+	@read -p "Enter version: " version; \
+	read -p "Enter image name: " image_name; \
+	docker build -t $$image_name:$$version . && \
+	docker tag eliezer-site-api:$$version $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$$image_name:$$version
+
+prod-push:
+	@read -p "Enter version: " version; \
+	read -p "Enter image name: " image_name; \
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com && \
+	docker push $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$$image_name:$$version
+
 clean-all:
 	docker compose down -v
 	rm -rf tmp/

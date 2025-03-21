@@ -8,10 +8,9 @@ import (
 )
 
 type Config struct {
-	AppName string
-	AppEnv  string
-	AppPort string
-
+	AppName    string
+	AppEnv     string
+	AppPort    string
 	DBHost     string
 	DBPort     string
 	DBUser     string
@@ -26,15 +25,14 @@ func LoadConfig() (*Config, error) {
 	}
 
 	config := &Config{
-		AppName: getEnvOrDefault("APP_NAME", "eliezer-site-api"),
-		AppEnv:  getEnvOrDefault("APP_ENV", "development"),
-		AppPort: getEnvOrDefault("APP_PORT", "8080"),
-
+		AppName:    getEnvOrDefault("APP_NAME", "app_name_default"),
+		AppEnv:     getEnvOrDefault("APP_ENV", "development"),
+		AppPort:    getEnvOrDefault("APP_PORT", "8080"),
 		DBHost:     getEnvOrDefault("DB_HOST", "db"),
 		DBPort:     getEnvOrDefault("DB_PORT", "5432"),
 		DBUser:     getEnvOrDefault("DB_USER", "postgres"),
 		DBPassword: getEnvOrDefault("DB_PASSWORD", "postgres"),
-		DBName:     getEnvOrDefault("DB_NAME", "postgres"),
+		DBName:     getEnvOrDefault("DB_NAME", "postgress"),
 		DBSSLMode:  getEnvOrDefault("DB_SSL_MODE", "disable"),
 	}
 

@@ -9,7 +9,7 @@ import (
 func SetupRoutes(messageController *controllers.MessageController, openai *controllers.ChatController) *gin.Engine {
 	router := gin.Default()
 
-	api := router.Group("/api")
+	api := router.Group("/v1")
 	{
 		api.GET("/messages/conversation/:conversation_id", messageController.GetByConversationID)
 

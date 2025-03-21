@@ -1,33 +1,25 @@
-FROM golang:1.21-alpine
+FROM golang:1.21-alpine AS builder
 
 WORKDIR /app
 
-# Add required packages and tools
-RUN apk add --no-cache \
-    netcat-openbsd \
-    postgresql-client \
-    gcc \
-    musl-dev \
-    curl
+RUN apk add --no-cache gcc musl-dev
 
-# Install air for hot reload
-RUN go install github.com/cosmtrek/air@v1.44.0
-
-# Install golang-migrate
-RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-amd64.tar.gz | tar xvz \
-    && mv migrate /usr/local/bin/migrate \
-    && chmod +x /usr/local/bin/migrate
-
-# Initialize Go module
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the rest of the application
 COPY . .
+RUN go build -o main .
 
-# Ensure dependencies are available
-RUN go mod tidy
+FROM alpine:latest
 
-# Development with hot reload
+WORKDIR /app
+
+COPY --from=builder /app/main .
+COPY --from=builder /app/db/migrations ./db/migrations
+COPY .env .
+
+RUN apk add --no-cache postgresql-client
+
 EXPOSE 8080
-CMD ["air"]
+
+CMD ["./main"]
