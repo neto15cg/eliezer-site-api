@@ -7,12 +7,10 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-// OpenAIService is now exported
 type OpenAIService struct {
 	client *openai.Client
 }
 
-// NewChatOpenaiService creates a new OpenAI service instance
 func NewChatOpenaiService() *OpenAIService {
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	client := openai.NewClient(apiKey)
@@ -22,7 +20,6 @@ func NewChatOpenaiService() *OpenAIService {
 	}
 }
 
-// SendMessage sends a message to the OpenAI API and returns the response
 func (s *OpenAIService) SendMessage(message string, history []openai.ChatCompletionMessage) (string, error) {
 	prompt := os.Getenv("CHATBOT_PROMPT")
 
@@ -40,7 +37,7 @@ func (s *OpenAIService) SendMessage(message string, history []openai.ChatComplet
 	resp, err := s.client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model:    openai.GPT4oMini,
+			Model:    openai.GPT4Turbo,
 			Messages: messages,
 		},
 	)

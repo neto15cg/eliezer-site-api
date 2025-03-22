@@ -16,7 +16,6 @@ type ChatController struct {
 	messageService interfaces.MessageServiceInterface
 }
 
-// Updated constructor to use interfaces
 func NewChatController(openaiService interfaces.OpenAIServiceInterface, messageService interfaces.MessageServiceInterface) *ChatController {
 	return &ChatController{
 		openaiService:  openaiService,
@@ -34,13 +33,11 @@ func (c *ChatController) HandleChatMessage(ctx *gin.Context) {
 
 	conversationID := request.ConversationID
 	if conversationID != nil {
-		// Get the conversation history from the database
 		history, err := c.messageService.GetByConversationID(conversationID)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		// messagesResponse = history
 		for _, message := range history {
 			messagesHistory = append(messagesHistory,
 				openai.ChatCompletionMessage{
@@ -61,13 +58,11 @@ func (c *ChatController) HandleChatMessage(ctx *gin.Context) {
 		return
 	}
 
-	// Create a new UUID for conversation if it's not provided
 	if conversationID == nil {
 		newID := uuid.New()
 		conversationID = &newID
 	}
 
-	// Save message and response to database
 	err = c.messageService.CreateMessage(&entities.Message{
 		ConversationID: conversationID,
 		Response:       &reply,
