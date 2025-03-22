@@ -10,8 +10,6 @@ import (
 	"app/internal/repositories"
 	"app/internal/routes"
 	"app/internal/services"
-
-	"github.com/gin-contrib/cors"
 )
 
 func main() {
@@ -45,15 +43,6 @@ func main() {
 	chatService := services.NewChatOpenaiService()
 	chatController := controllers.NewChatController(chatService, messageService)
 	router := routes.SetupRoutes(messageController, chatController)
-
-	// Add CORS middleware
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-	}))
 
 	fmt.Printf("Server starting on port %s...\n", cfg.AppPort)
 	if err := router.Run(":" + cfg.AppPort); err != nil {
