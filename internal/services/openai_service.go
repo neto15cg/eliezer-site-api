@@ -37,7 +37,7 @@ func (s *OpenAIService) SendMessage(message string, history []openai.ChatComplet
 	resp, err := s.client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model:    openai.GPT4Turbo,
+			Model:    openai.GPT4oMini,
 			Messages: messages,
 		},
 	)
