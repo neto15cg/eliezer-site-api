@@ -38,6 +38,20 @@ prod-push:
 	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com && \
 	docker push $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$$image_name:$$version
 
+# Production deployment with auto-versioning
+deploy:
+	$(eval VERSION=v$(shell LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 4))
+	$(eval IMAGE_NAME=$(shell grep IMAGE_NAME .env | cut -d '=' -f2))
+	$(eval AWS_ECR_URL=$(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com)
+	@echo "Deploying version: $(VERSION)"
+	@echo "Image name from .env: $(IMAGE_NAME)"
+	@echo "AWS ECR URL: $(AWS_ECR_URL)"
+	docker build -t $(IMAGE_NAME):$(VERSION) . && \
+	docker tag $(IMAGE_NAME):$(VERSION) $(AWS_ECR_URL)/$(IMAGE_NAME):$(VERSION) && \
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ECR_URL) && \
+	docker push $(AWS_ECR_URL)/$(IMAGE_NAME):$(VERSION)
+	@echo "Successfully deployed $(IMAGE_NAME):$(VERSION)"
+
 clean-all:
 	docker compose down -v
 	rm -rf tmp/
