@@ -39,7 +39,23 @@ jobs:
           ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           VERSION: ${{ steps.version.outputs.VERSION }}
         run: |
-          docker build -t ${IMAGE_NAME}:${VERSION} .
+          docker build \
+            --build-arg APP_NAME=${{ secrets.APP_NAME }} \
+            --build-arg APP_ENV=${{ secrets.APP_ENV }} \
+            --build-arg APP_PORT=${{ secrets.APP_PORT }} \
+            --build-arg DB_HOST=${{ secrets.DB_HOST }} \
+            --build-arg DB_PORT=${{ secrets.DB_PORT }} \
+            --build-arg DB_USER=${{ secrets.DB_USER }} \
+            --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            --build-arg DB_NAME=${{ secrets.DB_NAME }} \
+            --build-arg DB_SSL_MODE=${{ secrets.DB_SSL_MODE }} \
+            --build-arg API_USER=${{ secrets.API_USER }} \
+            --build-arg API_PASSWORD=${{ secrets.API_PASSWORD }} \
+            --build-arg LOG_LEVEL=${{ secrets.LOG_LEVEL }} \
+            --build-arg MIGRATION_PATH=${{ secrets.MIGRATION_PATH }} \
+            --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            --build-arg CHATBOT_PROMPT="${{ secrets.CHATBOT_PROMPT }}" \
+            -t ${IMAGE_NAME}:${VERSION} .
           docker tag ${IMAGE_NAME}:${VERSION} ${ECR_REGISTRY}/${IMAGE_NAME}:${VERSION}
           docker push ${ECR_REGISTRY}/${IMAGE_NAME}:${VERSION}
           echo "Successfully deployed ${IMAGE_NAME}:${VERSION}"
