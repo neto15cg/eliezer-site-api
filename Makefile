@@ -41,8 +41,12 @@ prod-push:
 # Production deployment with auto-versioning
 deploy:
 	$(eval VERSION=v$(shell LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 4))
-	$(eval IMAGE_NAME=$(shell grep IMAGE_NAME .env | cut -d '=' -f2))
+	$(eval IMAGE_NAME=$(shell grep IMAGE_NAME .env 2>/dev/null | cut -d '=' -f2 | tr -d ' ' || echo "eliezer-api"))
 	$(eval AWS_ECR_URL=$(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com)
+	@if [ -z "$(IMAGE_NAME)" ] || [ "$(IMAGE_NAME)" = "" ]; then \
+		echo "Error: IMAGE_NAME is not set in .env file"; \
+		exit 1; \
+	fi
 	@echo "Deploying version: $(VERSION)"
 	@echo "Image name from .env: $(IMAGE_NAME)"
 	@echo "AWS ECR URL: $(AWS_ECR_URL)"
